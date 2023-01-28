@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+//import jwt from "jsonwebtoken";
 import { pool } from "../database.js"
 import { SECRET } from "../config.js";
 
@@ -51,9 +51,9 @@ import { SECRET } from "../config.js";
         }
 
           // Create a token
-      const token = jwt.sign({ id: uid }, SECRET, {
+      /*const token = jwt.sign({ id: uid }, SECRET, {
         expiresIn: 60 //86400, // 24 hours
-      });
+      });*/
 
         res.status(201).json(usuario);
        
