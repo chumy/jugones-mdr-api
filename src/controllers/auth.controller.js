@@ -5,7 +5,7 @@ import { SECRET } from "../config.js";
 
 
   export const login = async (req,res) =>{
-
+    let usuario;
     try {
         //console.log(req.params)
         //console.log(req.body)
@@ -17,7 +17,7 @@ import { SECRET } from "../config.js";
           "SELECT COUNT(*) as emails FROM Usuaris where email = ?",
           [email]
         );
-        console.log("checking emails ", rows[0].emails);
+        //console.log("checking emails ", rows[0].emails);
         if (rows[0].emails == 0){
           // insert
           const [rows] = await pool.query(
@@ -35,9 +35,9 @@ import { SECRET } from "../config.js";
 
         }else{
           // get Role
-          console.log("usuario existe")
+          //console.log("usuario existe")
           const [usuaris] = await pool.query("SELECT uid, displayName, email, rol, photoURL, parella FROM Usuaris where email = ?", [email]);
-          console.log(usuaris[0])
+          //console.log(usuaris[0])
           usuario = usuaris[0];
           // chequeamos el uid por si el usuario ha sido introducido manualmente
           if (usuario.uid != uid)
