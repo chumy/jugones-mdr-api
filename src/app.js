@@ -11,14 +11,14 @@ import prestecsRoute from  "./routes/prestecs.route.js";
 
 
 
-const allowedOrigins = ['http://localhost:8100', 'http://localhost',];
+/*const allowedOrigins = ['http://localhost:8100', 'http://localhost',];
 const options = cors.CorsOptions = {
     origin : allowedOrigins
 };
-
+*/
 const app = express();
 
-app.use(cors(options))
+app.use(cors())
 app.set("pkg",pkg);
 
 app.use(morgan('dev'));
