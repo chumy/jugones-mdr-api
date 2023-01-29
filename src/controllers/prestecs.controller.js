@@ -61,22 +61,33 @@ export const getPrestecs = async (req,res) => {
 export const updatePrestec = async (req,res) =>{
     try {
         const { prestecId , joc, usuari, dataInici, dataFi } = req.body;
+        console.log("update prestec", prestecId)
 
         let query = "UPDATE Prestecs SET jocId = IFNULL(?, jocId), uid = IFNULL(?, uid), dataInici = IFNULL(?, dataInici), dataFi = IFNULL(?, dataFi) " +
                 " WHERE prestecId = ?"
         
-        console.log(req.body)
+        //console.log(req.body)
         
         const [result] = await pool.query( query ,
         [joc.jocId, usuari.uid, dataInici, dataFi, prestecId]
         );
 
-        console.log(result);
+        //console.log(result);
         if (result.affectedRows === 0)
         return res.status(404).json({ message: "Prestec not found" });
 
+        let query2= "select json_object('prestecId',p.prestecId, 'dataInici',p.dataInici,  'dataFi', p.dataFi, " +
+            " 'Joc', (select cast( CONCAT('[', " +
+            "    JSON_OBJECT('jocId', j.jocId ,'joc',j.joc, 'bggId', j.bggId, 'expansio',j.expansio, 'tipologia', j.tipologia, 'ambit',j.ambit, 'minJugadors',j.minJugadors, 'maxJugadors',j.maxJugadors,'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge,'comentaris', j.comentaris)	," +
+            "   ']') AS JSON ) from Jocs j where j.jocId = p.jocId)," +
+            "  'Usuari',   (select cast( CONCAT('[', " +
+            " JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella), " +
+            " ']')  AS JSON ) from Usuaris u where u.uid = p.uid)" +
+            " ) as Prestecs from Prestecs p where prestecId = ?"
         
-        res.status(202);
+        const [prestec] = await pool.query(query2, [prestecId]);
+        console.log(prestec);
+        res.status(202).send({prestec});
         
     } catch (error) {
         
