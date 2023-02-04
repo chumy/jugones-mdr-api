@@ -1,6 +1,6 @@
-//import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { pool } from "../database.js"
-import { SECRET } from "../config.js";
+import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
 
 
 
@@ -51,14 +51,58 @@ import { SECRET } from "../config.js";
         }
 
           // Create a token
-      /*const token = jwt.sign({ id: uid }, SECRET, {
-        expiresIn: 60 //86400, // 24 hours
-      });*/
+      const token = jwt.sign({ id: uid }, SECRET, {
+        expiresIn: 300 //86400, // 24 hours
+      });
 
-        res.status(201).json(usuario);
+        res.status(201).json({usuario , token } );
        
         
     } catch (error) {
         return res.status(500).json({ message: "Something goes wrong" });
+    }
+  }
+
+  export async function verifyToken(req, res, next) {
+    // Get the token from the headers
+    console.log("Verifying..")
+    
+    let token = req.headers["authorization"]; 
+  
+    // if does not exists a token
+    if (!token) {
+      return res
+        .status(401)
+        .send({ auth: false, message: "No Token was Provided" });
+    }
+  
+    //console.log("token", token)
+    // decode the token
+    try {
+      token = token.replace('Bearer ',''); 
+      const decoded = await jwt.verify(token, SECRET);
+
+      //console.log("decoded", decoded)
+    
+      // verificacion
+      const [rows] = await pool.query("SELECT rol FROM Usuaris WHERE uid = ?", [
+        decoded.id  ]);
+      
+      if (rows.affectedRows === 0)
+        return res.status(403).json({ message: "User Not allowed" });
+      
+      //console.log(rows[0])
+
+      //if (decoded.id != req.headers['x-auth-token']){
+      if (rows[0].rol != ROLE_ADMIN && rows[0].rol != ROLE_RESPONSABLE){
+        //console.log("error x-auth")
+        return res.status(403).send({auth: false, message: "Not allowed"})
+      }
+  
+      // continue with the next function
+      next();
+    } catch(err){
+      //console.log("error general", err)
+      return res.status(403).send({auth: false, message: "Not allowed"})
     }
   }

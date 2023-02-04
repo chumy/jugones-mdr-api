@@ -6,14 +6,14 @@ export const createPrestec = async (req,res) =>{
     try {
         
         
-        const { prestecId , joc, usuari, dataInici, dataFi } = req.body;
-        //console.log(dataInici)
+        const { prestecId , jocId, uid, dataInici, dataFi } = req.body;
+        console.log(req.body)
         const [rows] = await pool.query(
           "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)",
-          [prestecId , joc.jocId, usuari.uid, dataInici, dataFi ]
+          [prestecId , jocId, uid, dataInici, dataFi ]
         );
 
-        console.log('insert realizado', joc.jocId)
+        console.log('insert realizado', prestecId)
         
         if (rows.affectedRows === 0)
         return res.status(403).json({ message: "Prestec not found" });
@@ -60,8 +60,8 @@ export const getPrestecs = async (req,res) => {
 
 export const updatePrestec = async (req,res) =>{
     try {
-        const { prestecId , joc, usuari, dataInici, dataFi } = req.body;
-        console.log("update prestec", prestecId)
+        const { prestecId , jocId, uid, dataInici, dataFi } = req.body;
+        //console.log("update prestec", prestecId)
 
         let query = "UPDATE Prestecs SET jocId = IFNULL(?, jocId), uid = IFNULL(?, uid), dataInici = IFNULL(?, dataInici), dataFi = IFNULL(?, dataFi) " +
                 " WHERE prestecId = ?"
@@ -69,7 +69,7 @@ export const updatePrestec = async (req,res) =>{
         //console.log(req.body)
         
         const [result] = await pool.query( query ,
-        [joc.jocId, usuari.uid, dataInici, dataFi, prestecId]
+        [jocId, uid, dataInici, dataFi, prestecId]
         );
 
         //console.log(result);
@@ -86,7 +86,7 @@ export const updatePrestec = async (req,res) =>{
             " ) as Prestecs from Prestecs p where prestecId = ?"
         
         const [prestec] = await pool.query(query2, [prestecId]);
-        console.log(prestec);
+        //console.log(prestec);
         res.status(202).send({prestec});
         
     } catch (error) {
@@ -100,7 +100,7 @@ export const deletePrestecById = async (req,res) =>{
         
         const { prestecId } = req.params;
 
-        console.log(req.params)
+        //console.log(req.params)
         const [rows] = await pool.query("DELETE FROM Prestecs WHERE prestecId = ?", [prestecId]);
 
         

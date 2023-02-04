@@ -44,11 +44,11 @@ export const getJocById = async (req,res) =>{
     try {
         const [joc] = await pool.query('SELECT * FROM Jocs WHERE jocId = ?',[req.params.jocId]) 
         
-        if (joc.length <= 0) return res.status(404).json({
-            message: 'Joc no trobat'
-        })
+        if (joc.length <= 0) 
+            return res.status(404).json({ message: 'Joc no trobat' })
 
         res.status(200).json(joc[0])
+    
     } catch (error) {
         return res.status(500).json({ message: "Something goes wrong" });
     }
