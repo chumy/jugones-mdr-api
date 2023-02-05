@@ -44,6 +44,8 @@ export const getJocById = async (req,res) =>{
     try {
         const [joc] = await pool.query('SELECT * FROM Jocs WHERE jocId = ?',[req.params.jocId]) 
         
+        /*SELECT J.*, PD.jocId from Jocs J
+left outer join (select jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId;*/
         if (joc.length <= 0) 
             return res.status(404).json({ message: 'Joc no trobat' })
 

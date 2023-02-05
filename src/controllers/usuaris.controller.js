@@ -55,7 +55,7 @@ export const getUserById = async (req,res) =>{
 export const createUser = async (req,res) =>{
     try {
         const { uid, displayName, email, rol} = req.body;
-        console.log("recibiendo ", req.body)
+        //console.log("recibiendo ", req.body)
         const [ins] = await pool.query(
             "INSERT INTO Usuaris (uid, displayName, email, rol, photoURL, parella) VALUES (?, ?, ?, ?, null, null)",
             [uid, displayName, email, rol]
@@ -74,10 +74,14 @@ export const createUser = async (req,res) =>{
 
 export const deleteUserById = async (req,res) =>{
     try {
+        const { uid } = req.params;
+        const [rows] = await pool.query("DELETE FROM Usuaris WHERE uid = ?", [
+            uid  ]);
 
+        res.status(201).json(rows[0]);
     }
-    catch{
-
+    catch(error){
+        return res.status(500).json({ message: "Something goes wrong" });
     }
 }
 
