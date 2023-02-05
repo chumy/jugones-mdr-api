@@ -52,7 +52,7 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
 
           // Create a token
       const token = jwt.sign({ id: uid }, SECRET, {
-        expiresIn: 300 //86400, // 24 hours
+        expiresIn: 86400, // 24 hours
       });
 
         res.status(201).json({usuario , token } );
