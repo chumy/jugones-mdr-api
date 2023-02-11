@@ -31,7 +31,7 @@ export const createJoc = async (req,res) =>{
 
 export const getJocs = async (req,res) => {
     try {
-        const [jocs] = await pool.query('SELECT * FROM Jocs order by joc asc') 
+        const [jocs] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId order by joc asc') 
         res.json({ jocs })
     } catch (error) {
         return res.status(500).json({ message: "Something goes wrong" });
@@ -42,7 +42,7 @@ export const getJocs = async (req,res) => {
 export const getJocById = async (req,res) =>{
 
     try {
-        const [joc] = await pool.query('SELECT * FROM Jocs WHERE jocId = ?',[req.params.jocId]) 
+        const [joc] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE jocId = ?',[req.params.jocId]) 
         
         /*SELECT J.*, PD.jocId from Jocs J
 left outer join (select jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId;*/
@@ -74,7 +74,7 @@ export const updateJoc = async (req,res) =>{
         if (result.affectedRows === 0)
         return res.status(404).json({ message: "Joc not found" });
 
-        const [rows] = await pool.query("SELECT * FROM Jocs WHERE jocId = ?", [
+        const [rows] = await pool.query("SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE jocId = ?", [
         jocId,
         ]);
 
