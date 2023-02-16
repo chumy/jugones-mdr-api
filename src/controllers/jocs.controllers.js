@@ -42,7 +42,7 @@ export const getJocs = async (req,res) => {
 export const getJocById = async (req,res) =>{
 
     try {
-        const [joc] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE jocId = ?',[req.params.jocId]) 
+        const [joc] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE J.jocId = ?',[req.params.jocId]) 
         
         /*SELECT J.*, PD.jocId from Jocs J
 left outer join (select jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId;*/
@@ -74,7 +74,7 @@ export const updateJoc = async (req,res) =>{
         if (result.affectedRows === 0)
         return res.status(404).json({ message: "Joc not found" });
 
-        const [rows] = await pool.query("SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE jocId = ?", [
+        const [rows] = await pool.query("SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE J.jocId = ?", [
         jocId,
         ]);
 
@@ -123,4 +123,22 @@ export const getBggInfo = async (req,res) =>{
     } catch (e) {
         return res.status(500).send( {error :  e });
     }
+}
+
+export const searchBgg = async (req,res) =>{
+    try {
+    const { query } = req.params;
+    let url = "https://api.geekdo.com/xmlapi2/search?type=boardgame&query=" + query
+
+    const responseBgg = await fetch(url)
+    const contentBgg = await responseBgg.text();
+        
+    const data =  xml2json.toJson(contentBgg);
+   
+    res.status(200).send(data)
+      
+     
+} catch (e) {
+    return res.status(500).send( {error :  e });
+}
 }
