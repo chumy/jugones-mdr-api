@@ -11,6 +11,8 @@ router.get('/:jocId', jocCtrl.getJocById)
 router.patch('/', verifyToken, jocCtrl.updateJoc)
 router.delete('/:jocId', verifyToken, jocCtrl.deleteJocById)
 router.get('/bgg/:jocId', jocCtrl.getBggInfo)
+router.get('/bggsearchbyname/:query', jocCtrl.searchBggByName)
+
 
 
 export default router;

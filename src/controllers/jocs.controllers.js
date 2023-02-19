@@ -90,6 +90,8 @@ export const deleteJocById = async (req,res) =>{
     try {
         
         const { jocId } = req.params;
+        console.log(req.params)
+
         const [rows] = await pool.query("DELETE FROM Jocs WHERE jocId = ?", [jocId]);
 
         if (rows.affectedRows <= 0) {
@@ -125,7 +127,8 @@ export const getBggInfo = async (req,res) =>{
     }
 }
 
-export const searchBgg = async (req,res) =>{
+export const searchBggByName = async (req,res) =>{
+    console.log("entradon en busqueda BGG")
     try {
     const { query } = req.params;
     let url = "https://api.geekdo.com/xmlapi2/search?type=boardgame&query=" + query
@@ -134,11 +137,40 @@ export const searchBgg = async (req,res) =>{
     const contentBgg = await responseBgg.text();
         
     const data =  xml2json.toJson(contentBgg);
+
+    let resultatsJson = JSON.parse(data);
+    let resultats = resultatsJson.items.item;
+
    
-    res.status(200).send(data)
-      
+    //console.log(resultats.length)
+//    console.log(resultats.items.item)
+    //Si hay resultados enriquecemos el texto
+    if (resultats.length > 0)
+    {
+        //console.log("mathcings encontrados")
+
+        let jocsArray = [];
+        resultats.forEach(joc => {
+            jocsArray.push(joc.id)
+        });
+
+        //console.log(jocsArray.join(','))
+        let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
+        const responseNextBgg = await fetch(nextUrl)
+        const contentNextBgg = await responseNextBgg.text();
+        let dataNext =  xml2json.toJson(contentNextBgg);
+        
+        resultatsJson = JSON.parse(dataNext);
+        
+        //console.log(resultatsJson)
+        resultats = resultatsJson;
+        //console.log(resultats)
+
+    }
+    //res.status(200).send(data)
+    res.status(200).send(resultats)      
      
-} catch (e) {
-    return res.status(500).send( {error :  e });
-}
+    } catch (e) {
+        return res.status(500).send( {error :  e });
+    }
 }

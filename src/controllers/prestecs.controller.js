@@ -61,7 +61,7 @@ export const getPrestecs = async (req,res) => {
 export const updatePrestec = async (req,res) =>{
     try {
         const { prestecId , jocId, uid, dataInici, dataFi } = req.body;
-        //console.log("update prestec", prestecId)
+        console.log("update prestec", req.body)
 
         let query = "UPDATE Prestecs SET jocId = IFNULL(?, jocId), uid = IFNULL(?, uid), dataInici = IFNULL(?, dataInici), dataFi = IFNULL(?, dataFi) " +
                 " WHERE prestecId = ?"
