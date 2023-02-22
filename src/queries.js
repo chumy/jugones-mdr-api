@@ -1,7 +1,7 @@
 
 /* Juegos */
 export const queryJuego=" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit, C.tipologia, " +
-    "JB.expansio, JB.minJugadors, JB.minJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
+    "JB.expansio, JB.minJugadors, JB.maxJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
     "IF(PD.jocId is null, 1, 0) disponible " +
     "from Coleccio C " +
     "left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = C.jocId " +
@@ -10,7 +10,7 @@ export const queryJuego=" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit,
         
 
 export const queryListadoJuegos=" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit, C.tipologia, " +
-    "JB.expansio, JB.minJugadors, JB.minJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
+    "JB.expansio, JB.minJugadors, JB.maxJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
     "IF(PD.jocId is null, 1, 0) disponible " +
     "from Coleccio C " +
     "left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = C.jocId " +
