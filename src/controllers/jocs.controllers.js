@@ -1,5 +1,7 @@
 import { pool } from "../database.js"
 import xml2json from "xml2json";
+import * as q from "../queries.js";
+
 
 
 export const createJoc = async (req,res) =>{
@@ -9,17 +11,31 @@ export const createJoc = async (req,res) =>{
         //console.log(req.body)
         const { jocId, joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge } = req.body;
         const [rows] = await pool.query(
-          "INSERT INTO Jocs (jocId, joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge ) VALUES (?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?)",
-          [jocId, joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge]
+          "INSERT INTO Coleccio (jocId, joc, tipologia, ambit, comentaris, bggId ) VALUES (?, ?, ?, ?, ?, ?)",
+          [jocId, joc, tipologia, ambit, comentaris, bggId]
         );
 
-        console.log('insert realizado')
+        if (bggId > 0){
+            
+            // Check if exists
+            const [checkBgg] = await pool.query(q.queryCheckBgg, [bggId ]);
+            console.log("chequeo Bgg", checkBgg[0].total)
+            
+            if (checkBgg[0].total == 0)
+            {
+                console.log("nou joc BGG")
+                const [rows] = await pool.query(q.queryInsertBgg, [minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge, joc] );
+            }
+            // Check update Bgg?
+        }
+        //console.log('insert realizado')
         
         if (rows.affectedRows === 0)
-        return res.status(403).json({ message: "Joc not found" });
+            return res.status(403).json({ message: "Joc not found" });
 
-    const [jocs] = await pool.query("SELECT jocId, joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge FROM Jocs WHERE jocId = ?", [
-        jocId  ]);
+       
+        const [jocs] = await pool.query(q.queryJuego,[req.params.jocId]) 
+        
 
     res.status(201).json(jocs[0]);
         
@@ -31,9 +47,12 @@ export const createJoc = async (req,res) =>{
 
 export const getJocs = async (req,res) => {
     try {
-        const [jocs] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId order by joc asc') 
+       
+        //const [jocs] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId order by joc asc') 
+        const [jocs] = await pool.query(q.queryListadoJuegos);
         res.json({ jocs })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: "Something goes wrong" });
     }
     
@@ -42,7 +61,8 @@ export const getJocs = async (req,res) => {
 export const getJocById = async (req,res) =>{
 
     try {
-        const [joc] = await pool.query('SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE J.jocId = ?',[req.params.jocId]) 
+     
+        const [joc] = await pool.query(q.queryJuego,[req.params.jocId]) 
         
         /*SELECT J.*, PD.jocId from Jocs J
 left outer join (select jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId;*/
@@ -58,30 +78,45 @@ left outer join (select jocId from Prestecs P where P.dataFi is null) PD on PD.j
 
 export const updateJoc = async (req,res) =>{
     try {
+
+        //console.log(req.body)
+
         const { jocId, joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge } = req.body;
 
-        let query = "UPDATE Jocs SET joc = IFNULL(?, joc), tipologia = IFNULL(?, tipologia), ambit = IFNULL(?, ambit), comentaris = IFNULL(?, comentaris)," +
-        " minJugadors = IFNULL(?, minJugadors), maxJugadors = IFNULL(?, maxJugadors), dificultat = IFNULL(?, dificultat), duracio = IFNULL(?, duracio)," + 
-        " edat = IFNULL(?, edat), expansio = IFNULL(?, expansio), bggId = IFNULL(?, bggId), imatge = IFNULL(?, imatge) WHERE jocId = ?"
+        if (bggId > 0){
+            
+            // Check if exists
+            const [checkBgg] = await pool.query(q.queryCheckBgg, [bggId ]);
+            console.log("chequeo Bgg", checkBgg[0].total)
+
+            if (checkBgg[0].total == 0)
+            {
+                console.log("nou joc BGG")
+                const [rows] = await pool.query(q.queryInsertBgg, [minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge, joc] );
+            }
+            else{
+                console.log("update joc BGG")
+                const [rows] = await pool.query(q.queryUpdateBgg, [minJugadors, maxJugadors, dificultat, duracio, edat, expansio, imatge, joc, bggId] );
+                console.log(req.body);
+            }
+        }
         
-        console.log(req.body)
         
-        const [result] = await pool.query( query ,
-        [joc, tipologia, ambit, comentaris, minJugadors, maxJugadors, dificultat, duracio, edat, expansio, bggId, imatge, jocId]
+        
+        const [result] = await pool.query( q.queryUpdateJoc ,
+        [joc, tipologia, ambit, comentaris, bggId, jocId]
         );
 
-        console.log(result);
+        //console.log(result);
         if (result.affectedRows === 0)
         return res.status(404).json({ message: "Joc not found" });
 
-        const [rows] = await pool.query("SELECT J.*, IF(PD.jocId is null, 1, 0) disponible from Jocs J left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = J.jocId  WHERE J.jocId = ?", [
-        jocId,
-        ]);
+        const [rows] = await pool.query(q.queryJuego, [jocId ]);
 
         res.json(rows[0]);
         
     } catch (error) {
-        
+        console.log(error)
         return res.status(500).json({ message: "Something goes wrong on update" });
     }
 }
@@ -92,7 +127,7 @@ export const deleteJocById = async (req,res) =>{
         const { jocId } = req.params;
         console.log(req.params)
 
-        const [rows] = await pool.query("DELETE FROM Jocs WHERE jocId = ?", [jocId]);
+        const [rows] = await pool.query("DELETE FROM Coleccio WHERE jocId = ?", [jocId]);
 
         if (rows.affectedRows <= 0) {
         return res.status(404).json({ message: "Joc not trobat" });
@@ -110,8 +145,6 @@ export const getBggInfo = async (req,res) =>{
         const { jocId } = req.params;
         let url = "https://api.geekdo.com/xmlapi/boardgame/"+jocId+"&stats=1"
 //        console.log(url)
-               
-
         
         const responseBgg = await fetch(url)
         const contentBgg = await responseBgg.text();

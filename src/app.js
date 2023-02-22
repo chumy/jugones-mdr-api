@@ -7,6 +7,8 @@ import jocsRoute from "./routes/jocs.route.js";
 import authRoute from "./routes/auth.route.js";
 import usuarisRoute from "./routes/usuaris.route.js";
 import prestecsRoute from  "./routes/prestecs.route.js";
+import partidesRoute from  "./routes/partides.route.js";
+
 //import xml2json from "xml2json";
 
 
@@ -39,5 +41,6 @@ app.use('/api/jocs', jocsRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/usuaris', usuarisRoute);
 app.use('/api/prestecs', prestecsRoute);
+app.use('/api/partides', partidesRoute);
 
 export default app;
