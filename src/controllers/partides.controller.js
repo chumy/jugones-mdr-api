@@ -31,16 +31,15 @@ export const createPartida = async (req,res) =>{
 
         
         //console.log('insert realizado', prestecId)
-        /* Insercion de participantes
+        // Insercion del organizador
         if (rows.affectedRows === 0)
             return res.status(403).json({ message: "Partida not found" });
 
-            participants.forEach(async element => {
-            let row = await pool.query(
-                "INSERT INTO Participants (partidaId, soci ) VALUES (?, ?)",
-                 [ partidaId , element.uid ]
-              );          
-        });*/
+        let row = await pool.query(
+            "INSERT INTO Participants (partidaId, soci ) VALUES (?, ?)",
+                [ partidaId , organitzador.uid]
+            );          
+
 
         //Retorno de Partida
 
