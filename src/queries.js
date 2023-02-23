@@ -37,7 +37,7 @@ export const queryUpdateBgg = "UPDATE Jocs SET minJugadors = IFNULL(?, minJugado
 
 export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d') as data, p.numJugadors, p.oberta,  "+
        " (select cast(  JSON_OBJECT('joc',j.name, 'bggId', j.bggId, 'expansio', j.expansio, 'minJugadors', j.minJugadors,  'maxJugadors', j.minJugadors, "+
-       " 'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge)  AS JSON )  from Jocs j where j.bggId = p.bggId)  as 'joc', " +
+       " 'dificultat', j.dificultat, 'duracio', j.duracio, 'edat',j.edat,'imatge', j.imatge)  AS JSON )  from Jocs j where j.bggId = p.bggId)  as 'joc', " +
      "(select JSON_ARRAYAGG( JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL',  " +
         "u.photoURL,'parella', u.parella) ) from Usuaris u, Participants Par where Par.soci = u.uid and Par.partidaId = p.partidaId)  as 'participants',  " +
     " (select JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella) from Usuaris u where u.uid = p.organitzador) as 'organitzador' " +
@@ -50,15 +50,7 @@ export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid,
 
        
 
-export const queryListadoPrestecs2 = " select json_object('prestecId',p.prestecId, 'dataInici',p.dataInici,  'dataFi', p.dataFi,  " +
-        "'Joc', (select cast(   "+
-        "JSON_OBJECT('jocId', c.jocId ,'joc',c.joc, 'bggId', c.bggId, 'expansio',j.expansio, 'tipologia', c.tipologia, 'ambit',c.ambit, " +
-        "'minJugadors',j.minJugadors, 'maxJugadors',j.maxJugadors,'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge,'comentaris', c.comentaris) " +
-        " AS JSON ) from Coleccio c left outer join Jocs j on c.bggId = j.bggId where c.jocId = p.jocId), " +
-        "'Usuari',   (select cast(  " +
-        "JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella)  " +
-        "  AS JSON ) from Usuaris u where u.uid = p.uid) " +
-        ") as Prestecs from Prestecs p "                   
+           
 
         
 export const queryListadoPrestecs = " select p.prestecId, DATE_FORMAT(p.dataInici, '%Y-%m-%d') as 'dataInici',  DATE_FORMAT(p.dataFi, '%Y-%m-%d') as 'dataFi',   " +
