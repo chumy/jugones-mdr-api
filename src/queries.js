@@ -42,3 +42,27 @@ export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data,
         "u.photoURL,'parella', u.parella) ) from Usuaris u, Participants Par where Par.soci = u.uid and Par.partidaId = p.partidaId)  as 'participants',  " +
     " (select JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella) from Usuaris u where u.uid = p.organitzador) as 'organitzador' " +
     " from Partides p"
+
+
+
+export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)";
+
+export const queryListadoPrestecs2 = " select json_object('prestecId',p.prestecId, 'dataInici',p.dataInici,  'dataFi', p.dataFi,  " +
+        "'Joc', (select cast(   "+
+        "JSON_OBJECT('jocId', c.jocId ,'joc',c.joc, 'bggId', c.bggId, 'expansio',j.expansio, 'tipologia', c.tipologia, 'ambit',c.ambit, " +
+        "'minJugadors',j.minJugadors, 'maxJugadors',j.maxJugadors,'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge,'comentaris', c.comentaris) " +
+        " AS JSON ) from Coleccio c left outer join Jocs j on c.bggId = j.bggId where c.jocId = p.jocId), " +
+        "'Usuari',   (select cast( CONCAT('[', " +
+        "JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella),  " +
+        "']')  AS JSON ) from Usuaris u where u.uid = p.uid) " +
+        ") as Prestecs from Prestecs p "           
+
+export const queryListadoPrestecs = " select json_object('prestecId',p.prestecId, 'dataInici',p.dataInici,  'dataFi', p.dataFi,  " +
+        "'Joc', (select cast(   "+
+        "JSON_OBJECT('jocId', c.jocId ,'joc',c.joc, 'bggId', c.bggId, 'expansio',j.expansio, 'tipologia', c.tipologia, 'ambit',c.ambit, " +
+        "'minJugadors',j.minJugadors, 'maxJugadors',j.maxJugadors,'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge,'comentaris', c.comentaris) " +
+        " AS JSON ) from Coleccio c left outer join Jocs j on c.bggId = j.bggId where c.jocId = p.jocId), " +
+        "'Usuari',   (select cast(  " +
+        "JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella)  " +
+        "  AS JSON ) from Usuaris u where u.uid = p.uid) " +
+        ") as Prestecs from Prestecs p "                   

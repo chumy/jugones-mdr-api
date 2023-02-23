@@ -1,15 +1,7 @@
 import { pool } from "../database.js"
+import * as q from "../queries.js"
 
-export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)";
-export const queryListadoPrestecs = " select json_object('prestecId',p.prestecId, 'dataInici',p.dataInici,  'dataFi', p.dataFi,  " +
-        "'Joc', (select cast( CONCAT('[',  "+
-           "JSON_OBJECT('jocId', c.jocId ,'joc',c.joc, 'bggId', c.bggId, 'expansio',j.expansio, 'tipologia', c.tipologia, 'ambit',c.ambit, " +
-            "'minJugadors',j.minJugadors, 'maxJugadors',j.maxJugadors,'dificultat', j.dificultat, 'edat',j.edat,'imatge', j.imatge,'comentaris', c.comentaris), " +
-            "']') AS JSON ) from Coleccio c left outer join Jocs j on c.bggId = j.bggId where c.jocId = p.jocId), " +
-        "'Usuari',   (select cast( CONCAT('[', " +
-            "JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella),  " +
-            "']')  AS JSON ) from Usuaris u where u.uid = p.uid) " +
-        ") as Prestecs from Prestecs p "
+
 
 export const createPrestec = async (req,res) =>{
 
@@ -19,7 +11,7 @@ export const createPrestec = async (req,res) =>{
         const { prestecId , jocId, uid, dataInici, dataFi } = req.body;
         console.log(req.body)
         const [rows] = await pool.query(
-            queryInsertPrestec
+            q.queryInsertPrestec
           [prestecId , jocId, uid, dataInici, dataFi ]
         );
 
@@ -29,7 +21,7 @@ export const createPrestec = async (req,res) =>{
         return res.status(403).json({ message: "Prestec not found" });
 
      //            console.log('control 2')
-        const [prestecs] = await pool.query( queryListadoPrestecs + " WHERE prestecId = ?", [
+        const [prestecs] = await pool.query( q.queryListadoPrestecs + " WHERE prestecId = ?", [
         prestecId  ]);
         //console.log('control 1')
         res.status(201).json({prestecs});
@@ -45,7 +37,7 @@ export const getPrestecs = async (req,res) => {
    
         //console.log(query);
         //const [prestecs] = await pool.query('SELECT * FROM Prestecs where dataFi is null order by dataInici asc') 
-        const [prestecs] = await pool.query(queryListadoPrestecs) 
+        const [prestecs] = await pool.query(q.queryListadoPrestecs) 
         res.status(200).send({prestecs })
     } catch (error) {
         console.log(error)
@@ -73,7 +65,7 @@ export const updatePrestec = async (req,res) =>{
         return res.status(404).json({ message: "Prestec not found" });
 
         
-        const [prestec] = await pool.query(queryListadoPrestecs, [prestecId]);
+        const [prestec] = await pool.query(q.queryListadoPrestecs, [prestecId]);
         //console.log(prestec);
         res.status(202).send({prestec});
         
