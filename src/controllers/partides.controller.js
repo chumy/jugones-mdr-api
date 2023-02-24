@@ -116,12 +116,16 @@ export const deletePartidaById = async (req,res) =>{
         }
 
         const [partida] = await pool.query("DELETE FROM Partides WHERE partidaId = ?", [partidaId]);
-        
+        //console.log("borrado")
         if (partida.affectedRows <= 0) {
             return res.status(404).json({ message: "Partida no esborrada" });
         }
+
         const [partides] = await pool.query( q.queryListadoPartidas);
-        res.sendStatus(204).send({partides});
+        
+        //console.log(partides);
+
+        res.sendStatus(204);
         
     } catch (error) {
         console.log(error)
