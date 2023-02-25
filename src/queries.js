@@ -46,11 +46,7 @@ export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data,
 
 /* PRESTECS */
 
-export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)";
-
-       
-
-           
+export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)";       
 
         
 export const queryListadoPrestecs = " select p.prestecId, DATE_FORMAT(p.dataInici, '%Y-%m-%d') as 'dataInici',  DATE_FORMAT(p.dataFi, '%Y-%m-%d') as 'dataFi',   " +

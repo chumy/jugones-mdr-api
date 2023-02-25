@@ -10,19 +10,16 @@ export const createPrestec = async (req,res) =>{
         
         const { prestecId , jocId, uid, dataInici, dataFi } = req.body;
         console.log(req.body)
-        const [rows] = await pool.query(
-            q.queryInsertPrestec
-          [prestecId , jocId, uid, dataInici, dataFi ]
-        );
+        const [rows] = await pool.query(q.queryInsertPrestec, [prestecId , jocId, uid, dataInici, dataFi ] );
 
         console.log('insert realizado', prestecId)
         
         if (rows.affectedRows === 0)
-        return res.status(403).json({ message: "Prestec not found" });
+            return res.status(403).json({ message: "Prestec not found" });
 
-     //            console.log('control 2')
-        const [prestecs] = await pool.query( q.queryListadoPrestecs + " WHERE prestecId = ?", [
-        prestecId  ]);
+       console.log('control 2')
+        
+        const [prestecs] = await pool.query( q.queryListadoPrestecs + " WHERE prestecId = ?", [prestecId ]);
         //console.log('control 1')
         res.status(201).json({prestecs});
         
