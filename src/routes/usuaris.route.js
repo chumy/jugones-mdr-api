@@ -9,6 +9,7 @@ router.post('/', verifyToken, userCtrl.createUser)
 router.get('/', userCtrl.getUsers)
 router.patch('/', verifyToken, userCtrl.updateUserById)
 router.delete('/:uid', verifyToken, userCtrl.deleteUserById)
+router.get('/:uid',verifyToken, userCtrl.getUserById)
 
 
 export default router;

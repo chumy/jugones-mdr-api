@@ -45,9 +45,12 @@ export const getUsers = async (req,res) =>{
 
 export const getUserById = async (req,res) =>{
     try {
-        
+        const { uid } = req.params;
+        const [usuaris] = await pool.query('SELECT * FROM Usuaris where uid = ?', [ uid ]) 
+        res.status(200).json(usuaris[0])
     }
     catch(error){
+        console.log(error)
         return res.status(500).json({ message: "Something goes wrong" });
     }
 }
