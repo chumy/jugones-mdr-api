@@ -9,11 +9,11 @@ export const createPartida = async (req,res) =>{
     try {
         
         
-        const { partidaId, joc, organitzador, numJugadors, data, participants } = req.body;
-        //console.log(joc)
+        const { partidaId, joc, organitzador, numJugadors, data, comentaris, participants } = req.body;
+        console.log(req.body)
        const [rows] = await pool.query(
-          "INSERT INTO Partides (partidaId, bggId , organitzador, numJugadors, data ) VALUES (?, ?, ?, ?, NULLIF(?, ''))",
-          [partidaId , joc.bggId, organitzador.uid, numJugadors, data]
+          "INSERT INTO Partides (partidaId, bggId , organitzador, numJugadors, data, comentaris ) VALUES (?, ?, ?, ?, NULLIF(?, ''), NULLIF(?, ''))",
+          [partidaId , joc.bggId, organitzador.uid, numJugadors, data, comentaris]
         );
 
         if (joc.bggId > 0){
@@ -73,16 +73,17 @@ export const getPartides = async (req,res) => {
 
 export const updatePartidaById = async (req,res) =>{
     try {
-        const { partidaId, joc, organitzador, numJugadors, data, participants, oberta } = req.body;
+        const { partidaId, joc, organitzador, numJugadors, data, participants, oberta, comentaris } = req.body;
         console.log("update partida", req.body)
 
-        let query = "UPDATE Partides SET bggId = IFNULL(?, bggId), organitzador = IFNULL(?, organitzador), numJugadors = IFNULL(?, numJugadors), data = IFNULL(?, data), oberta = IFNULL(?, oberta)  " +
+        let query = "UPDATE Partides SET bggId = IFNULL(?, bggId), organitzador = IFNULL(?, organitzador), numJugadors = IFNULL(?, numJugadors), " +
+                " data = IFNULL(?, data), oberta = IFNULL(?, oberta), comentaris = IFNULL(?,comentaris)  " + 
                 " WHERE partidaId = ?"
         
         //console.log(req.body)
         
         const [result] = await pool.query( query ,
-        [joc.bggId, organitzador.uid, numJugadors, data, oberta, partidaId]
+        [joc.bggId, organitzador.uid, numJugadors, data, oberta, comentaris, partidaId]
         );
 
         //console.log(result);

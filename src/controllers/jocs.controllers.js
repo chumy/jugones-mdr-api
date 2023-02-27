@@ -156,6 +156,7 @@ export const getBggInfo = async (req,res) =>{
 
         
     } catch (e) {
+        console.log(e)
         return res.status(500).send( {error :  e });
     }
 }
@@ -204,6 +205,7 @@ export const searchBggByName = async (req,res) =>{
     res.status(200).send(resultats)      
      
     } catch (e) {
+        console.log(e)
         return res.status(500).send( {error :  e });
     }
 }

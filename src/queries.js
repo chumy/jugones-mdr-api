@@ -35,7 +35,7 @@ export const queryUpdateBgg = "UPDATE Jocs SET minJugadors = IFNULL(?, minJugado
 /*  PARTIDES */
                       
 
-export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d') as data, p.numJugadors, p.oberta,  "+
+export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d') as data, p.numJugadors, p.oberta, p.comentaris,  "+
        " (select cast(  JSON_OBJECT('joc',j.name, 'bggId', j.bggId, 'expansio', j.expansio, 'minJugadors', j.minJugadors,  'maxJugadors', j.minJugadors, "+
        " 'dificultat', j.dificultat, 'duracio', j.duracio, 'edat',j.edat,'imatge', j.imatge)  AS JSON )  from Jocs j where j.bggId = p.bggId)  as 'joc', " +
      "(select JSON_ARRAYAGG( JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL',  " +
