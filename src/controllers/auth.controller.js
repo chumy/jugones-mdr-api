@@ -25,7 +25,7 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
             [uid, displayName, email, rol, photoURL]
           );
           usuario.uid = uid;
-          usuario.sodisplayNameci = displayName;
+          usuario.displayName= displayName;
           usuario.email = email;
           usuario.rol = rol;
           usuario.photoURL = photoURL;
