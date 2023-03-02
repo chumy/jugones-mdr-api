@@ -10,7 +10,7 @@ export const createPartida = async (req,res) =>{
         
         
         const { partidaId, joc, organitzador, numJugadors, data, comentaris, participants } = req.body;
-        console.log(req.body)
+        //console.log(req.body)
        const [rows] = await pool.query(
           "INSERT INTO Partides (partidaId, bggId , organitzador, numJugadors, data, comentaris ) VALUES (?, ?, ?, ?, NULLIF(?, ''), NULLIF(?, ''))",
           [partidaId , joc.bggId, organitzador.uid, numJugadors, data, comentaris]
@@ -36,8 +36,8 @@ export const createPartida = async (req,res) =>{
             return res.status(403).json({ message: "Partida not found" });
 
         let row = await pool.query(
-            "INSERT INTO Participants (partidaId, soci ) VALUES (?, ?)",
-                [ partidaId , organitzador.uid]
+            "INSERT INTO Participants (partidaId, soci, explicador, propietario, need_explicacion  ) VALUES (?, ?, ?, ?, ?)",
+                [ partidaId , organitzador.uid, organitzador.explicador, organitzador.propietari, organitzador.need_explicacio]
             );          
 
 
@@ -74,7 +74,7 @@ export const getPartides = async (req,res) => {
 export const updatePartidaById = async (req,res) =>{
     try {
         const { partidaId, joc, organitzador, numJugadors, data, participants, oberta, comentaris } = req.body;
-        console.log("update partida", req.body)
+        //console.log("update partida", req.body)
 
         let query = "UPDATE Partides SET bggId = IFNULL(?, bggId), organitzador = IFNULL(?, organitzador), numJugadors = IFNULL(?, numJugadors), " +
                 " data = IFNULL(?, data), oberta = IFNULL(?, oberta), comentaris = IFNULL(?,comentaris)  " + 
@@ -139,9 +139,9 @@ export const afegirParticipant = async (req,res) => {
         const { partida, participant } = req.body;
 
         let row = await pool.query(
-            "INSERT INTO Participants (partidaId, soci ) VALUES (?, ?)",
-            [ partida.partidaId , participant ]
-        );   
+            "INSERT INTO Participants (partidaId, soci, explicador, propietario, need_explicacion  ) VALUES (?, ?, ?, ?, ?)",
+                [ partida.partidaId , participant.uid, participant.explicador, participant.propietari, participant.need_explicacio]
+            ); 
         
         const [partides] = await pool.query(q.queryListadoPartidas + " where partidaId = ?", [partida.partidaId]);
         //console.log(partides);
@@ -156,7 +156,7 @@ export const afegirParticipant = async (req,res) => {
 export const eliminarParticipant = async (req,res) => {
     try {
         const { partida, participant } = req.body;
-        console.log(partida)
+        //console.log(partida)
 
         let row = await pool.query(
             "DELETE FROM  Participants WHERE partidaId =? AND soci = ? ",
