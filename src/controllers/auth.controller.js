@@ -102,11 +102,12 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
       
       //console.log(rows[0])
 
+      /*
       //if (decoded.id != req.headers['x-auth-token']){
       if (rows[0].rol != ROLE_ADMIN && rows[0].rol != ROLE_RESPONSABLE){
         //console.log("error x-auth")
         return res.status(403).send({auth: false, message: "Not allowed"})
-      }
+      }*/
   
       // continue with the next function
       next();
