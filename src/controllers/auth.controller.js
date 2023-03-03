@@ -5,7 +5,14 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
 
 
   export const login = async (req,res) =>{
-    let usuario;
+    let usuario = {
+      'uid' : '',
+          'displayName' : '',
+          'email' : '',
+          'rol' : '',
+          'photoURL' : '',
+          'parella' : ''}
+    
     try {
         //console.log(req.params)
         //console.log(req.body)
@@ -17,13 +24,14 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
           "SELECT COUNT(*) as emails FROM Usuaris where email = ?",
           [email]
         );
-        //console.log("checking emails ", rows[0].emails);
+        console.log("checking emails ", rows[0].emails);
         if (rows[0].emails == 0){
           // insert
           const [rows] = await pool.query(
             "INSERT INTO Usuaris (uid, displayName, email, rol, photoURL) VALUES (?, ?, ?, ?, ?)",
             [uid, displayName, email, rol, photoURL]
           );
+
           usuario.uid = uid;
           usuario.displayName= displayName;
           usuario.email = email;
@@ -59,6 +67,7 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
        
         
     } catch (error) {
+       console.log(error)
         return res.status(500).json({ message: "Something goes wrong" });
     }
   }
@@ -102,7 +111,7 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
       // continue with the next function
       next();
     } catch(err){
-      //console.log("error general", err)
+      console.log( err)
       return res.status(403).send({auth: false, message: "Not allowed"})
     }
   }
