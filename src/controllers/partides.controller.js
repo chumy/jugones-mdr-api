@@ -10,7 +10,7 @@ export const createPartida = async (req,res) =>{
         
         
         const { partidaId, joc, organitzador, numJugadors, data, comentaris, participants } = req.body;
-        console.log(req.body)
+        //console.log(req.body)
        const [rows] = await pool.query(
           "INSERT INTO Partides (partidaId, bggId , organitzador, numJugadors, data, comentaris ) VALUES (?, ?, ?, ?, NULLIF(?, ''), NULLIF(?, ''))",
           [partidaId , joc.bggId, organitzador.uid, numJugadors, data, comentaris]
@@ -30,7 +30,7 @@ export const createPartida = async (req,res) =>{
         }
 
         
-        console.log('insert realizado', partidaId)
+        //console.log('insert realizado', partidaId)
         // Insercion del organizador
         if (rows.affectedRows === 0)
             return res.status(403).json({ message: "Partida not found" });
@@ -43,7 +43,7 @@ export const createPartida = async (req,res) =>{
 
         //Retorno de Partida
 
-            console.log('control 2')
+            //console.log('control 2')
         const [partides] = await pool.query( q.queryListadoPartidas);
         //console.log('control 1')*/
         res.status(201).send({partides});
