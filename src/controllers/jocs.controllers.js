@@ -34,8 +34,9 @@ export const createJoc = async (req,res) =>{
             return res.status(403).json({ message: "Joc not found" });
 
        
-        const [jocs] = await pool.query(q.queryJuego,[req.params.jocId]) 
+        const [jocs] = await pool.query(q.queryJuego,[jocId]) 
         
+        console.log(jocs)
 
     res.status(201).json(jocs[0]);
         
@@ -143,7 +144,9 @@ export const deleteJocById = async (req,res) =>{
 export const getBggInfo = async (req,res) =>{
     try {
         const { jocId } = req.params;
-        let url = "https://api.geekdo.com/xmlapi/boardgame/"+jocId+"&stats=1"
+
+        let url = "https://api.geekdo.com/xmlapi2/thing?id="+jocId + "&videos=1&stats=1"
+        //url = "https://api.geekdo.com/xmlapi/boardgame/"+jocId+"&stats=1"
 //        console.log(url)
         
         const responseBgg = await fetch(url)
@@ -165,7 +168,7 @@ export const searchBggByName = async (req,res) =>{
     console.log("entradon en busqueda BGG")
     try {
     const { query } = req.params;
-    let url = "https://api.geekdo.com/xmlapi2/search?type=boardgame&query=" + query
+    let url = "https://api.geekdo.com/xmlapi2/search?query=" + query
 
     const responseBgg = await fetch(url)
     const contentBgg = await responseBgg.text();
@@ -188,11 +191,13 @@ export const searchBggByName = async (req,res) =>{
             jocsArray.push(joc.id)
         });
 
-        //console.log(jocsArray.join(','))
-        let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
+        console.log(jocsArray.join(','))
+        let nextUrl = "https://api.geekdo.com/xmlapi2/thing?id="+jocsArray.join(',')+"&stats=1&type=boardgame"
+        //let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
         const responseNextBgg = await fetch(nextUrl)
         const contentNextBgg = await responseNextBgg.text();
         let dataNext =  xml2json.toJson(contentNextBgg);
+        console.log(dataNext)
         
         resultatsJson = JSON.parse(dataNext);
         
