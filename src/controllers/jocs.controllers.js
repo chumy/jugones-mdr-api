@@ -182,10 +182,11 @@ export const searchBggByName = async (req,res) =>{
 
    
     //console.log(resultats.length)
-    //console.log(resultats)
+    console.log(resultats)
     //Si hay resultados enriquecemos el texto
     if (resultats)
     {
+        let ids=''
         if (resultats.length  > 0) {
         //console.log("mathcings encontrados")
 
@@ -193,9 +194,14 @@ export const searchBggByName = async (req,res) =>{
             resultats.forEach(joc => {
                 jocsArray.push(joc.id)
             });
+            ids = jocsArray.join(',')
+        }else{
+
+            ids = resultats.id
+        }
 
             //console.log(jocsArray.join(','))
-            let nextUrl = "https://api.geekdo.com/xmlapi2/thing?id="+jocsArray.join(',')+"&stats=1&type=boardgame"
+            let nextUrl = "https://api.geekdo.com/xmlapi2/thing?id="+ids+"&stats=1&type=boardgame"
             //let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
             const responseNextBgg = await fetch(nextUrl)
             const contentNextBgg = await responseNextBgg.text();
@@ -208,9 +214,8 @@ export const searchBggByName = async (req,res) =>{
             resultats = resultatsJson;
             //console.log(resultats)
 
-        }
     }else{
-        resultats = {items:[]};
+        resultats = null;
     }
 
     //res.status(200).send(data)
