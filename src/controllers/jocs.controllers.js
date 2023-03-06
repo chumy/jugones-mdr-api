@@ -36,7 +36,7 @@ export const createJoc = async (req,res) =>{
        
         const [jocs] = await pool.query(q.queryJuego,[jocId]) 
         
-        console.log(jocs)
+        console.log('Insertado el juego ', joc, ' BggId: ', bggId)
 
     res.status(201).json(jocs[0]);
         
@@ -170,6 +170,8 @@ export const searchBggByName = async (req,res) =>{
     const { query } = req.params;
     let url = "https://api.geekdo.com/xmlapi2/search?query=" + query
 
+    console.log("Buscando en BGG", query)
+
     const responseBgg = await fetch(url)
     const contentBgg = await responseBgg.text();
         
@@ -180,32 +182,37 @@ export const searchBggByName = async (req,res) =>{
 
    
     //console.log(resultats.length)
-//    console.log(resultats.items.item)
+    //console.log(resultats)
     //Si hay resultados enriquecemos el texto
-    if (resultats.length > 0)
+    if (resultats)
     {
+        if (resultats.length  > 0) {
         //console.log("mathcings encontrados")
 
-        let jocsArray = [];
-        resultats.forEach(joc => {
-            jocsArray.push(joc.id)
-        });
+            let jocsArray = [];
+            resultats.forEach(joc => {
+                jocsArray.push(joc.id)
+            });
 
-        console.log(jocsArray.join(','))
-        let nextUrl = "https://api.geekdo.com/xmlapi2/thing?id="+jocsArray.join(',')+"&stats=1&type=boardgame"
-        //let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
-        const responseNextBgg = await fetch(nextUrl)
-        const contentNextBgg = await responseNextBgg.text();
-        let dataNext =  xml2json.toJson(contentNextBgg);
-        console.log(dataNext)
-        
-        resultatsJson = JSON.parse(dataNext);
-        
-        //console.log(resultatsJson)
-        resultats = resultatsJson;
-        //console.log(resultats)
+            //console.log(jocsArray.join(','))
+            let nextUrl = "https://api.geekdo.com/xmlapi2/thing?id="+jocsArray.join(',')+"&stats=1&type=boardgame"
+            //let nextUrl = "https://api.geekdo.com/xmlapi/boardgame/"+jocsArray.join(',')+"&stats=1"
+            const responseNextBgg = await fetch(nextUrl)
+            const contentNextBgg = await responseNextBgg.text();
+            let dataNext =  xml2json.toJson(contentNextBgg);
+            //console.log(dataNext)
+            
+            resultatsJson = JSON.parse(dataNext);
+            
+            //console.log(resultatsJson)
+            resultats = resultatsJson;
+            //console.log(resultats)
 
+        }
+    }else{
+        resultats = {items:[]};
     }
+
     //res.status(200).send(data)
     res.status(200).send(resultats)      
      
