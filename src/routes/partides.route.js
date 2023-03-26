@@ -11,6 +11,7 @@ router.patch('/', verifyToken, partidaCtrl.updatePartidaById)
 router.delete('/:partidaId', verifyToken, partidaCtrl.deletePartidaById)
 router.post('/addParticipant', verifyToken, partidaCtrl.afegirParticipant)
 router.post('/delParticipant', verifyToken, partidaCtrl.eliminarParticipant)
+router.get('/:partidaId', partidaCtrl.getPartidaById)
 
 
 

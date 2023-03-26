@@ -174,3 +174,20 @@ export const eliminarParticipant = async (req,res) => {
 
 
 }
+
+export const getPartidaById = async (req,res) => {
+    try {
+       
+        const { partidaId } = req.params;
+        //console.log(query);
+        //const [prestecs] = await pool.query('SELECT * FROM Prestecs where dataFi is null order by dataInici asc') 
+        const [partides] = await pool.query(q.queryListadoPartidas + " where p.partidaId = ?", [partidaId]) 
+
+        //console.log(partides);
+
+        res.status(200).send( {partides} )
+    } catch (error) {
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+    
+}

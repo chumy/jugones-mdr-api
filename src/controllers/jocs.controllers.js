@@ -179,13 +179,15 @@ export const searchBggByName = async (req,res) =>{
 
     let resultatsJson = JSON.parse(data);
     let resultats = resultatsJson.items.item;
-
+    let total = resultatsJson.items.total;
    
-    //console.log(resultats.length)
-    console.log(resultats)
+    //console.log(resultatsJson)
+    //console.log(resultats)
     //Si hay resultados enriquecemos el texto
     if (resultats)
     {
+       // total = resultats.length
+
         let ids=''
         if (resultats.length  > 0) {
         //console.log("mathcings encontrados")
@@ -217,9 +219,9 @@ export const searchBggByName = async (req,res) =>{
     }else{
         resultats = null;
     }
-
+    console.log("Elementos encontrados", total)
     //res.status(200).send(data)
-    res.status(200).send(resultats)      
+    res.status(200).send( resultats)      
      
     } catch (e) {
         console.log(e)
