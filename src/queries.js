@@ -50,8 +50,8 @@ export const queryListadoPartidas2 =    "select  p.partidaId, DATE_FORMAT(p.data
      "u.photoURL,'propietari', Par.propietario, 'need_explicacio', Par.need_explicacion, 'explicador', Par.explicador) ) from Usuaris u, Participants Par where Par.soci = u.uid and Par.partidaId = p.partidaId)  as 'participants',  " +
  " (select JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella) from Usuaris u where u.uid = p.organitzador) as 'organitzador' " +
  " from Partides p " +
- " where p.oberta = 1 or ( p.oberta = 0 and p.data > ADDDATE(now(), INTERVAL -2 DAY) );"
-
+ " where p.oberta = 1 or ( p.oberta = 0 ( data is null or data > ADDDATE(now(), INTERVAL -2 DAY) ) )"
+ 
 /* PRESTECS */
 
 export const queryInsertPrestec = "INSERT INTO Prestecs (prestecId , jocId, uid, dataInici, dataFi  ) VALUES (?, ?, ?, ?,?)";       
