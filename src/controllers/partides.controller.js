@@ -71,6 +71,8 @@ export const getPartides = async (req,res) => {
     
 }
 
+
+
 export const updatePartidaById = async (req,res) =>{
     try {
         const { partidaId, joc, organitzador, numJugadors, data, participants, oberta, comentaris } = req.body;
@@ -143,7 +145,7 @@ export const afegirParticipant = async (req,res) => {
                 [ partida.partidaId , participant.uid, participant.explicador, participant.propietari, participant.need_explicacio]
             ); 
         
-        const [partides] = await pool.query(q.queryListadoPartidas + " and partidaId = ?", [partida.partidaId]);
+        const [partides] = await pool.query(q.queryPartida, [partida.partidaId]);
         //console.log(partides);
         res.status(202).send({partides});
 
@@ -163,7 +165,7 @@ export const eliminarParticipant = async (req,res) => {
             [ partida.partidaId , participant ]
         );   
         
-        const [partides] = await pool.query(q.queryListadoPartidas + " and partidaId = ?", [partida.partidaId]);
+        const [partides] = await pool.query(q.queryPartida [partida.partidaId]);
         //console.log(partides);
         res.status(202).send({partides});
 
@@ -181,8 +183,9 @@ export const getPartidaById = async (req,res) => {
         const { partidaId } = req.params;
         //console.log(query);
         //const [prestecs] = await pool.query('SELECT * FROM Prestecs where dataFi is null order by dataInici asc') 
-        const [partides] = await pool.query(q.queryListadoPartidas + " and p.partidaId = ?", [partidaId]) 
+        const [partides] = await pool.query(q.queryPartida , [partidaId]) 
 
+        
         //console.log(partides);
 
         res.status(200).send( {partides} )
