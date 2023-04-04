@@ -9,13 +9,20 @@ export const queryJuego=" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit,
     " WHERE C.jocId = ? " 
         
 
-export const queryListadoJuegos=" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit, C.tipologia, " +
-    "JB.expansio, JB.minJugadors, JB.maxJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
+export const queryListadoJuegos=" SELECT C.jocId, C.joc, C.ambit, C.tipologia, JB.expansio, JB.imatge, " +
     "IF(PD.jocId is null, 1, 0) disponible " +
     "from Coleccio C " +
     "left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = C.jocId " +
     "left outer join Jocs JB on JB.bggId = C.bggId " +
     "order by C.joc asc"
+
+    export const queryListadoJuegosCompleta =" SELECT C.jocId, C.joc, C.bggId, C.comentaris, C.ambit, C.tipologia, " +
+    "JB.expansio, JB.minJugadors, JB.maxJugadors, JB.dificultat, JB.duracio, JB.edat, JB.imatge, " +
+    "IF(PD.jocId is null, 1, 0) disponible " +
+    "from Coleccio C " +
+    "left outer join (select  jocId from Prestecs P where P.dataFi is null) PD on PD.jocId = C.jocId " +
+    "left outer join Jocs JB on JB.bggId = C.bggId " +
+    "order by C.joc asc"    
 
 export const queryUpdateJoc = "UPDATE Coleccio SET joc = IFNULL(?, joc), tipologia = IFNULL(?, tipologia), ambit = IFNULL(?, ambit), comentaris = IFNULL(?, comentaris), " +
     "bggId = IFNULL(?, bggId) WHERE jocId = ?";                
