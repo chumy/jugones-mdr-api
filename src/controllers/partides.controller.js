@@ -45,7 +45,7 @@ export const createPartida = async (req,res) =>{
 
             //console.log('control 2')
         const [partides] = await pool.query( q.queryListadoPartidas);
-        //console.log('control 1')*/
+        //console.log(partides)
         res.status(201).send({partides});
         
     } catch (error) {

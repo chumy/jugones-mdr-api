@@ -50,7 +50,7 @@ export const queryListadoPartidas2 =    "select  p.partidaId, DATE_FORMAT(p.data
     " (select JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella) from Usuaris u where u.uid = p.organitzador) as 'organitzador' " +
     " from Partides p"
 
-    export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d %h:%i') as data, p.numJugadors, p.oberta, p.comentaris,  "+
+    export const queryListadoPartidas =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d %H:%i') as data, p.numJugadors, p.oberta, p.comentaris,  "+
     " (select cast(  JSON_OBJECT('joc',j.name, 'bggId', j.bggId, 'expansio', j.expansio, 'minJugadors', j.minJugadors,  'maxJugadors', j.maxJugadors, "+
     " 'dificultat', j.dificultat, 'duracio', j.duracio, 'edat',j.edat,'imatge', j.imatge)  AS JSON )  from Jocs j where j.bggId = p.bggId)  as 'joc', " +
   "(select JSON_ARRAYAGG( JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'photoURL',  " +
@@ -59,7 +59,7 @@ export const queryListadoPartidas2 =    "select  p.partidaId, DATE_FORMAT(p.data
  " from Partides p " +
  " where p.oberta = 1 or ( p.oberta = 0 and ( data is null or data > ADDDATE(now(), INTERVAL -2 DAY) ) ) "
 
- export const queryPartida =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d %h:%i') as data, p.numJugadors, p.oberta, p.comentaris,  "+
+ export const queryPartida =    "select  p.partidaId, DATE_FORMAT(p.data, '%Y-%m-%d %H:%i') as data, p.numJugadors, p.oberta, p.comentaris,  "+
  " (select cast(  JSON_OBJECT('joc',j.name, 'bggId', j.bggId, 'expansio', j.expansio, 'minJugadors', j.minJugadors,  'maxJugadors', j.maxJugadors, "+
  " 'dificultat', j.dificultat, 'duracio', j.duracio, 'edat',j.edat,'imatge', j.imatge)  AS JSON )  from Jocs j where j.bggId = p.bggId)  as 'joc', " +
 "(select JSON_ARRAYAGG( JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'photoURL',  " +
