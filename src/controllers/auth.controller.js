@@ -60,7 +60,7 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
 
           // Create a token
       const token = jwt.sign({ id: uid }, SECRET, {
-        expiresIn: 86400, // 24 hours
+        expiresIn:  432000, // 5 days
       });
 
         res.status(201).json({usuario , token } );
@@ -116,3 +116,46 @@ import { ROLE_ADMIN, ROLE_RESPONSABLE, SECRET } from "../config.js";
       return res.status(403).send({auth: false, message: "Not allowed"})
     }
   }
+
+  export const refreshToken = async (req,res) =>{
+
+    try {
+
+      let rol = 0;
+
+      const {  uid, email } = req.body;
+      //Check Email
+      const [rows] = await pool.query(
+        "SELECT COUNT(*) as checkUser FROM Usuaris where uid = ? and email = ?",
+        [uid, email]
+      );
+      console.log("checking user ", rows[0].checkUser);
+      if (rows[0].checkUser == 0){
+       
+        rol = 0
+
+      }else{
+        // get Role
+        //console.log("usuario existe")
+        const [usuaris] = await pool.query("SELECT  rol FROM Usuaris where email = ?", [email]);
+        //console.log(usuaris[0])
+        rol = usuaris[0];
+        
+      }
+
+        // Create a token
+    const token = jwt.sign({ id: uid }, SECRET, {
+      expiresIn: 432000, // 5 dias
+    });
+
+      res.status(201).json({rol , token } );
+     
+      
+  } catch (error) {
+     console.log(error)
+      return res.status(500).json({ message: "Something goes wrong" });
+  }
+
+  }
+  
+
