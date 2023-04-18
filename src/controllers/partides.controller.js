@@ -158,14 +158,15 @@ export const afegirParticipant = async (req,res) => {
 export const eliminarParticipant = async (req,res) => {
     try {
         const { partida, participant } = req.body;
-        //console.log(partida)
+        //console.log(participant)
 
         let row = await pool.query(
             "DELETE FROM  Participants WHERE partidaId =? AND soci = ? ",
             [ partida.partidaId , participant ]
         );   
+    
         
-        const [partides] = await pool.query(q.queryPartida [partida.partidaId]);
+        const [partides] = await pool.query(q.queryPartida, [partida.partidaId]);
         //console.log(partides);
         res.status(202).send({partides});
 
