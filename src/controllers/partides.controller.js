@@ -79,7 +79,7 @@ export const updatePartidaById = async (req,res) =>{
         //console.log("update partida", req.body)
 
         let query = "UPDATE Partides SET bggId = IFNULL(?, bggId), organitzador = IFNULL(?, organitzador), numJugadors = IFNULL(?, numJugadors), " +
-                " data = IFNULL(?, data), oberta = IFNULL(?, oberta), comentaris = IFNULL(?,comentaris)  " + 
+                " data = ?, oberta = IFNULL(?, oberta), comentaris = IFNULL(?,comentaris)  " + 
                 " WHERE partidaId = ?"
         
         //console.log(req.body)
