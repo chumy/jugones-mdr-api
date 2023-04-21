@@ -67,6 +67,11 @@ export const queryListadoPartidas2 =    "select  p.partidaId, DATE_FORMAT(p.data
 " (select JSON_OBJECT( 'uid', u.uid, 'displayName', u.displayName, 'email', u.email, 'rol', u.rol, 'photoURL', u.photoURL,'parella', u.parella) from Usuaris u where u.uid = p.organitzador) as 'organitzador' " +
 " from Partides p " +
 " where p.partidaId = ?"
+
+export const queryDatesPropostes = "select  d.partidaId, d.dataId, DATE_FORMAT(d.data, '%Y-%m-%d %H:%i') as data,   "+
+" (select JSON_ARRAYAGG(  JSON_OBJECT('displayName',u.displayName, 'photoURL', u.photoURL, 'uid', u.uid ) )   from Usuaris u,DatesParticipants p where u.uid = p.uid and p.dataId = d.dataId)  as 'participants' "+
+ " from DatesPartides d " +
+ " where d.partidaId = ?"
  
 /* PRESTECS */
 

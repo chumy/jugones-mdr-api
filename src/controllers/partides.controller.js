@@ -195,3 +195,118 @@ export const getPartidaById = async (req,res) => {
     }
     
 }
+
+export const afegirData = async (req,res) => {
+    try {
+        const { partida, data, usuari } = req.body;
+
+        let row = await pool.query(
+            "INSERT INTO DatesPartides (partidaId, data  ) VALUES (?, ?)",
+                [ partida.partidaId, data]
+            ); 
+        
+        let dataId = row[0].insertId;
+
+        let convidat = await pool.query(
+            "INSERT INTO DatesParticipants (dataId, uid  ) VALUES (?, ?)",
+                [ dataId, usuari.uid ]
+            ); 
+
+        const [partides] = await pool.query(q.queryDatesPropostes, [partida.partidaId]);
+        //console.log(partides);
+        res.status(202).send({partides});
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+}
+
+export const getDatesById = async (req,res) => {
+    try {
+       
+        const { partidaId } = req.params;
+        //console.log(partidaId);
+        //const [prestecs] = await pool.query('SELECT * FROM Prestecs where dataFi is null order by dataInici asc') 
+        const [partides] = await pool.query(q.queryDatesPropostes , [partidaId]) 
+
+        
+        //console.log(partides);
+
+        res.status(200).send( {partides} )
+    } catch (error) {
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+    
+}
+
+export const esborrarData = async (req,res) => {
+    try {
+        const { data, partida } = req.body;
+        //console.log(participant)
+
+        let row = await pool.query(
+            "DELETE FROM  DatesParticipants WHERE dataId =?",
+            [ data ]
+        );   
+
+        let row2 = await pool.query(
+            "DELETE FROM DatesPartides WHERE dataId =?",
+            [ data ]
+        );   
+    
+        
+        const [partides] = await pool.query(q.queryDatesPropostes, [partida.partidaId]);
+        console.log(partides);
+        res.status(202).send({partides});
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+
+}
+
+export const addParticipantData = async (req,res) => {
+    try {
+        const { data, usuari, partida } = req.body;
+        //console.log(participant)
+
+        let row = await pool.query(
+            "INSERT INTO DatesParticipants (dataId, uid  ) VALUES (?, ?)",
+            [ data, usuari.uid ]
+        );   
+ 
+        
+        const [partides] = await pool.query(q.queryDatesPropostes, [partida.partidaId]);
+        //console.log(partides);
+        res.status(202).send({partides});
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+
+}
+
+export const delParticipantData = async (req,res) => {
+    try {
+        const { data, usuari, partida } = req.body;
+        //console.log(participant)
+
+        let row = await pool.query(
+            "delete from DatesParticipants where dataId = ? and uid = ?",
+            [ data, usuari.uid ]
+        );   
+ 
+        
+        const [partides] = await pool.query(q.queryDatesPropostes, [partida.partidaId]);
+        //console.log(partides);
+        res.status(202).send({partides});
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Something goes wrong" });
+    }
+
+}
